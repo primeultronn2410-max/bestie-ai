@@ -23,10 +23,21 @@
 
       // Greeting (from Step 1)
       const msg = new SpeechSynthesisUtterance(
-        "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
-      );
-      msg.lang = "hi-IN";
-      speechSynthesis.speak(msg);
+  "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+);
+
+msg.lang = "hi-IN";
+msg.rate = 0.95;
+msg.pitch = 1.1;
+
+// 🔥 VERY IMPORTANT: mic starts AFTER she finishes
+msg.onend = () => {
+  recognition.start();
+  document.getElementById("status").innerText = "Listening...";
+};
+
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(msg);
 
       // Speech Recognition
       const SpeechRecognition =
