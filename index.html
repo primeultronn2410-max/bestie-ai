@@ -5,117 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body style="
-  background:black;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  font-family:sans-serif;
-  text-align:center;
-">
+<body style="background:black;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
 
-  <div id="status" style="margin-bottom:16px;font-size:18px;">
-    Tap anywhere
-  </div>
+  <div id="status">Tap anywhere</div>
+  <div id="userText"></div>
+  <div id="aiText"></div>
 
-  <div id="userText" style="margin-top:10px;color:#00ffcc;"></div>
-  <div id="aiText" style="margin-top:10px;color:#ff66cc;"></div>
+  <script>
+    let started = false;
 
-<script>
-let started = false;
-let recognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-// Setup Speech Recognition FIRST
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "hi-IN";
+    recognition.continuous = false;
 
-recognition = new SpeechRecognition();
-recognition.lang = "hi-IN";
-recognition.continuous = false;
+    recognition.onresult = async (event) => {
+      const text = event.results[0][0].transcript;
+      document.getElementById("userText").innerText = "You: " + text;
 
-// When user finishes speaking
-recognition.onresult = async (event) => {
-  const text = event.results[0][0].transcript;
+      const res = await fetch(
+        "https://bestie-ai-worker.primeultronn2410.workers.dev",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        }
+      );
 
-  document.getElementById("userText").innerText = "You: " + text;
-  document.getElementById("status").innerText = "Thinking…";
+      const data = await res.json();
+      document.getElementById("aiText").innerText = "Her: " + data.reply;
+    };
 
-  const res = await fetch(
-    "https://bestie-ai-worker.primeultronn2410.workers.dev",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    }
-  );
+    document.body.addEventListener("click", () => {
+      if (started) return;
+      started = true;
 
-  const data = await res.json();
-  document.getElementById("aiText").innerText = "Her: " + data.reply;
-};
+      const msg = new SpeechSynthesisUtterance(
+        "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+      );
 
-// Start only on user tap
-document.body.addEventListener("click", () => {
-  if (started) return;
-  started = true;
+      msg.lang = "hi-IN";
 
-  const msg = new SpeechSynthesisUtterance(
-    "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
-  );
+      msg.onend = () => {
+        document.getElementById("status").innerText = "Listening…";
+        recognition.start();
+      };
 
-  msg.lang = "hi-IN";
-  msg.rate = 0.95;
-  msg.pitch = 1.1;
-
-  // IMPORTANT: mic starts AFTER she finishes speaking
-  msg.onend = () => {
-    recognition.start();
-    document.getElementById("status").innerText = "Listening…";
-  };
-
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(msg);
-});
-</script>
-
-</body>
-</html>};
-
-window.speechSynthesis.cancel();
-window.speechSynthesis.speak(msg);
-
-      // Speech Recognition
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      recognition = new SpeechRecognition();
-      recognition.lang = "hi-IN";
-      recognition.continuous = false;
-
-      recognition.onresult = async (event) => {
-  const text = event.results[event.results.length - 1][0].transcript;
-alert("Heard: " + text); // 🔍 DEBUG
-  document.getElementById("userText").innerText = "You: " + text;
-
-  const res = await fetch(
-    "https://bestie-ai-worker.primeultronn2410.workers.dev",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    }
-  );
-
-  const data = await res.json();
-  document.getElementById("aiText").innerText = "Her: " + data.reply;
-};
-
-msg.onend = () => {
-  recognition.start();
-  document.getElementById("status").innerText = "Listening...";
-};
+      speechSynthesis.cancel();
+      speechSynthesis.speak(msg);
+    });
   </script>
 
 </body>
