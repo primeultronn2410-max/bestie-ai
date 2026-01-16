@@ -11,74 +11,51 @@
   <div id="user" style="margin-bottom:10px;color:#00ffaa;"></div>
   <div id="ai" style="color:#ffaaee;"></div>
 
-<script>
-let started = false;
-let recognition;
-
-document.body.addEventListener("click", () => {
-  if (started) return;
-  started = true;
-
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  recognition = new SpeechRecognition();
-  recognition.lang = "hi-IN";
-  recognition.continuous = false;
-
-  recognition.onresult = async (event) => {
-    const text = event.results[0][0].transcript;
-    document.getElementById("user").innerText = "You: " + text;
-
-    const res = await fetch(
-      "https://bestie-ai-worker.primeultronn2410.workers.dev",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text })
-      }
-    );
-
-    const data = await res.json();
-    document.getElementById("ai").innerText = "Her: " + data.reply;
-  };
-
-  const msg = new SpeechSynthesisUtterance(
-    "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
-  );
-  msg.lang = "hi-IN";
-
-  msg.onend = () => {
-    document.getElementById("status").innerText = "Listening...";
-    recognition.start();
-  };
-
-  speechSynthesis.speak(msg);
-});
-</script>
-
-</body>
-</html>      const data = await res.json();
-      document.getElementById("aiText").innerText = "Her: " + data.reply;
-    };
+  <!-- 🔴 SCRIPT MUST BE HERE -->
+  <script>
+    let started = false;
+    let recognition;
 
     document.body.addEventListener("click", () => {
       if (started) return;
       started = true;
 
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "hi-IN";
+      recognition.continuous = false;
+
+      recognition.onresult = async (event) => {
+        const text = event.results[0][0].transcript;
+        document.getElementById("user").innerText = "You: " + text;
+
+        const res = await fetch(
+          "https://bestie-ai-worker.primeultronn2410.workers.dev",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+          }
+        );
+
+        const data = await res.json();
+        document.getElementById("ai").innerText = "Her: " + data.reply;
+      };
+
       const msg = new SpeechSynthesisUtterance(
         "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
       );
-
       msg.lang = "hi-IN";
 
       msg.onend = () => {
-        document.getElementById("status").innerText = "Listening…";
+        document.getElementById("status").innerText = "Listening...";
         recognition.start();
       };
 
-      speechSynthesis.cancel();
-      speechSynthesis.speak(msg);
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(msg);
     });
   </script>
 
