@@ -7,34 +7,58 @@
 
 <body style="background:black;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
 
-  <div id="status">Tap anywhere</div>
-  <div id="userText"></div>
-  <div id="aiText"></div>
+  <div id="status" style="margin-bottom:15px;">Tap anywhere</div>
+  <div id="user" style="margin-bottom:10px;color:#00ffaa;"></div>
+  <div id="ai" style="color:#ffaaee;"></div>
 
-  <script>
-    let started = false;
+<script>
+let started = false;
+let recognition;
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+document.body.addEventListener("click", () => {
+  if (started) return;
+  started = true;
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = "hi-IN";
-    recognition.continuous = false;
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    recognition.onresult = async (event) => {
-      const text = event.results[0][0].transcript;
-      document.getElementById("userText").innerText = "You: " + text;
+  recognition = new SpeechRecognition();
+  recognition.lang = "hi-IN";
+  recognition.continuous = false;
 
-      const res = await fetch(
-        "https://bestie-ai-worker.primeultronn2410.workers.dev",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text })
-        }
-      );
+  recognition.onresult = async (event) => {
+    const text = event.results[0][0].transcript;
+    document.getElementById("user").innerText = "You: " + text;
 
-      const data = await res.json();
+    const res = await fetch(
+      "https://bestie-ai-worker.primeultronn2410.workers.dev",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      }
+    );
+
+    const data = await res.json();
+    document.getElementById("ai").innerText = "Her: " + data.reply;
+  };
+
+  const msg = new SpeechSynthesisUtterance(
+    "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+  );
+  msg.lang = "hi-IN";
+
+  msg.onend = () => {
+    document.getElementById("status").innerText = "Listening...";
+    recognition.start();
+  };
+
+  speechSynthesis.speak(msg);
+});
+</script>
+
+</body>
+</html>      const data = await res.json();
       document.getElementById("aiText").innerText = "Her: " + data.reply;
     };
 
