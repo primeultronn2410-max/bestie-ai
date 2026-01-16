@@ -4,28 +4,47 @@
   <title>Bestie AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="background:black;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-size:20px;">
 
-  <div>Bestie is here…</div>
+<body style="background:black;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+
+  <div id="status" style="margin-bottom:20px;font-size:18px;">
+    Tap anywhere and speak…
+  </div>
+
+  <div id="text" style="font-size:20px;color:#00ffcc;text-align:center;"></div>
 
   <script>
-let started = false;
+    let started = false;
+    let recognition;
 
-document.body.addEventListener("click", () => {
-  if (started) return;
-  started = true;
+    document.body.addEventListener("click", () => {
+      if (started) return;
+      started = true;
 
-  const msg = new SpeechSynthesisUtterance(
-    "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
-  );
-  msg.lang = "hi-IN";
-  msg.rate = 0.95;
-  msg.pitch = 1.1;
+      // Greeting (from Step 1)
+      const msg = new SpeechSynthesisUtterance(
+        "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+      );
+      msg.lang = "hi-IN";
+      speechSynthesis.speak(msg);
 
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(msg);
-});
-</script>
+      // Speech Recognition
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "hi-IN";
+      recognition.continuous = true;
+
+      recognition.onresult = (event) => {
+        const last = event.results[event.results.length - 1][0].transcript;
+        document.getElementById("text").innerText = last;
+      };
+
+      recognition.start();
+      document.getElementById("status").innerText = "Listening…";
+    });
+  </script>
 
 </body>
 </html>
