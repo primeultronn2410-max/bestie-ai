@@ -65,9 +65,10 @@ alert("Heard: " + text); // 🔍 DEBUG
   document.getElementById("aiText").innerText = "Her: " + data.reply;
 };
 
-      recognition.start();
-      document.getElementById("status").innerText = "Listening…";
-    });
+msg.onend = () => {
+  recognition.start();
+  document.getElementById("status").innerText = "Listening...";
+};
   </script>
 
 </body>
