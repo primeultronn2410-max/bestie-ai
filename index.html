@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bestie AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="background:black;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-size:20px;">
+
+  <div>Bestie is here…</div>
+
+  <script>
+    window.onload = () => {
+      const msg = new SpeechSynthesisUtterance(
+        "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+      );
+      msg.lang = "hi-IN";
+      msg.rate = 0.95;
+      msg.pitch = 1.1;
+      speechSynthesis.speak(msg);
+    };
+  </script>
+
+</body>
+</html>
