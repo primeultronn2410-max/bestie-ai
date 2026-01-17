@@ -1,44 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Bestie</title>
+  <title>Bestie AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-
-    img {
-      width: 260px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(255, 0, 200, 0.4);
-    }
-
-    #status {
-      font-size: 18px;
-      opacity: 0.8;
-    }
-  </style>
 </head>
 
-<body>
+<body style="
+  margin:0;
+  background:black;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:sans-serif;
+">
 
-  <!-- Anime Girl Image -->
-  <img src="girl.png" alt="Anime Girl" />
+  <img 
+    src="girl.png" 
+    alt="Bestie"
+    style="
+      width:220px;
+      border-radius:50%;
+      margin-bottom:20px;
+      box-shadow:0 0 30px rgba(255,255,255,0.2);
+    "
+  />
 
-  <div id="status">Tap anywhere 💖</div>
+  <div id="status" style="font-size:18px;opacity:0.9;">
+    Tap anywhere 💫
+  </div>
 
   <script>
     let started = false;
@@ -47,20 +39,15 @@
       if (started) return;
       started = true;
 
+      document.getElementById("status").innerText = "Speaking…";
+
       const msg = new SpeechSynthesisUtterance(
-        "Hey… main yahin hoon. Aaj aap kaise ho?"
+        "Hey… tum aa gaye. Main yahin thi, tumhara wait kar rahi thi."
       );
 
       msg.lang = "hi-IN";
       msg.rate = 0.95;
       msg.pitch = 1.1;
-
-      document.getElementById("status").innerText = "Speaking…";
-
-      msg.onend = () => {
-        document.getElementById("status").innerText =
-          "Bas itna hi 😄 Next step ready!";
-      };
 
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(msg);
