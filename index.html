@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bestie AI</title>
+  <title>Bestie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -9,27 +9,17 @@
   margin:0;
   background:black;
   color:white;
+  height:100vh;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
-  height:100vh;
   font-family:sans-serif;
+  text-align:center;
 ">
 
-  <img 
-    src="girl.png" 
-    alt="Bestie"
-    style="
-      width:220px;
-      border-radius:50%;
-      margin-bottom:20px;
-      box-shadow:0 0 30px rgba(255,255,255,0.2);
-    "
-  />
-
-  <div id="status" style="font-size:18px;opacity:0.9;">
-    Tap anywhere 💫
+  <div>
+    <h2>Bestie 💖</h2>
+    <p id="status">Tap anywhere</p>
   </div>
 
   <script>
@@ -42,7 +32,7 @@
       document.getElementById("status").innerText = "Speaking…";
 
       const msg = new SpeechSynthesisUtterance(
-        "Hey… tum aa gaye. Main yahin thi, tumhara wait kar rahi thi."
+        "Hey… tum aa gaye. Main yahin hoon. Batao, aaj kaisa feel ho raha hai?"
       );
 
       msg.lang = "hi-IN";
