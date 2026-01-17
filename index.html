@@ -20,29 +20,52 @@
   <div>
     <h2>Bestie 💖</h2>
     <p id="status">Tap anywhere</p>
+    <p id="heard" style="margin-top:15px;color:#00ffcc;"></p>
   </div>
 
-  <script>
-    let started = false;
+<script>
+let started = false;
+let recognition;
 
-    document.body.addEventListener("click", () => {
-      if (started) return;
-      started = true;
+// Setup speech recognition
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      document.getElementById("status").innerText = "Speaking…";
+recognition = new SpeechRecognition();
+recognition.lang = "hi-IN";
+recognition.continuous = false;
 
-      const msg = new SpeechSynthesisUtterance(
-        "Hey… tum aa gaye. Main yahin hoon. Batao, aaj kaisa feel ho raha hai?"
-      );
+// When user speaks
+recognition.onresult = (event) => {
+  const text = event.results[0][0].transcript;
+  document.getElementById("heard").innerText = "You said: " + text;
+  document.getElementById("status").innerText = "Heard ✅";
+};
 
-      msg.lang = "hi-IN";
-      msg.rate = 0.95;
-      msg.pitch = 1.1;
+document.body.addEventListener("click", () => {
+  if (started) return;
+  started = true;
 
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(msg);
-    });
-  </script>
+  document.getElementById("status").innerText = "Speaking…";
+
+  const msg = new SpeechSynthesisUtterance(
+    "Hey… tum aa gaye. Main sun rahi hoon. Batao."
+  );
+
+  msg.lang = "hi-IN";
+  msg.rate = 0.95;
+  msg.pitch = 1.1;
+
+  // 🔥 Mic starts AFTER she finishes
+  msg.onend = () => {
+    document.getElementById("status").innerText = "Listening…";
+    recognition.start();
+  };
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(msg);
+});
+</script>
 
 </body>
 </html>
