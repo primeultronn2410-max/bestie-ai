@@ -1,57 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Bestie AI</title>
+  <meta charset="UTF-8" />
+  <title>Bestie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    img {
+      width: 260px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 200, 0.4);
+    }
+
+    #status {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+  </style>
 </head>
 
-<body style="background:black;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+<body>
 
-  <div id="status" style="margin-bottom:15px;">Tap anywhere</div>
-  <div id="user" style="margin-bottom:10px;color:#00ffaa;"></div>
-  <div id="ai" style="color:#ffaaee;"></div>
+  <!-- Anime Girl Image -->
+  <img src="girl.png" alt="Anime Girl" />
 
-  <!-- 🔴 SCRIPT MUST BE HERE -->
+  <div id="status">Tap anywhere 💖</div>
+
   <script>
     let started = false;
-    let recognition;
 
     document.body.addEventListener("click", () => {
       if (started) return;
       started = true;
 
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      recognition = new SpeechRecognition();
-      recognition.lang = "hi-IN";
-      recognition.continuous = false;
-
-      recognition.onresult = async (event) => {
-        const text = event.results[0][0].transcript;
-        document.getElementById("user").innerText = "You: " + text;
-
-        const res = await fetch(
-          "https://bestie-ai-worker.primeultronn2410.workers.dev",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text })
-          }
-        );
-
-        const data = await res.json();
-        document.getElementById("ai").innerText = "Her: " + data.reply;
-      };
-
       const msg = new SpeechSynthesisUtterance(
-        "Hey… aap aa gaye. Bataiye, aaj mood kaisa hai?"
+        "Hey… main yahin hoon. Aaj aap kaise ho?"
       );
+
       msg.lang = "hi-IN";
+      msg.rate = 0.95;
+      msg.pitch = 1.1;
+
+      document.getElementById("status").innerText = "Speaking…";
 
       msg.onend = () => {
-        document.getElementById("status").innerText = "Listening...";
-        recognition.start();
+        document.getElementById("status").innerText =
+          "Bas itna hi 😄 Next step ready!";
       };
 
       window.speechSynthesis.cancel();
